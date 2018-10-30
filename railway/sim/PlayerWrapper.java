@@ -36,15 +36,35 @@ public class PlayerWrapper {
         List<Coordinates> geo,
         List<List<Integer>> infra,
         int[][] transit,
-        List<String> townLookup) throws Exception {
+        List<String> townLookup,
+        List<BidInfo> allBids) throws Exception {
 
         Log.record("Initializing player " + this.name);
 
         this.budget = budget;
-        this.player.init(this.name, budget, geo, infra, transit, townLookup);
+
+        try {
+            if (!timer.isAlive()) timer.start();
+
+            timer.call_start(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    player.init(name, budget, geo, infra, transit, townLookup, allBids);
+                    return null;
+                }
+            });
+
+            timer.call_wait(timeout);
+        }
+        catch (Exception ex) {
+            System.out.println("Player " + this.name + " has possibly timed out.");
+            throw ex;
+        }       
     }
 
-    public Bid getBid(List<Bid> currentBids, List<BidInfo> allBids) throws Exception {
+    public Bid getBid(List<Bid> currentBids, List<BidInfo> allBids, Bid lastRoundMaxBid)
+        throws Exception {
+
         Log.record("Getting bid for player " + this.name);
 
         Bid bid;
@@ -55,7 +75,7 @@ public class PlayerWrapper {
             timer.call_start(new Callable<Bid>() {
                 @Override
                 public Bid call() throws Exception {
-                    return player.getBid(currentBids, allBids);
+                    return player.getBid(currentBids, allBids, lastRoundMaxBid);
                 }
             });
 

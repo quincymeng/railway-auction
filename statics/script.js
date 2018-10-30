@@ -32,9 +32,11 @@ function drawLine(ctx, x_start, y_start, x_end, y_end, color, split) {
 }
 
 function drawTownName(ctx, name, x, y) {
+    ctx.font = '12px Arial';
+
     ctx.beginPath();
     ctx.arc(x, y, 1, 0*Math.PI, 2*Math.PI);
-    ctx.fillText(name, x+3, y+20);
+    ctx.fillText(name, x+3, y+15);
     ctx.stroke();
 }
 
@@ -57,6 +59,8 @@ function drawPlayers(ctx, players) {
 function drawInfo(ctx, players, info) {
     var x = x_max + 20;
     var y = 20;
+
+    ctx.font = '20px Arial';
 
     ctx.beginPath();
 
@@ -91,7 +95,7 @@ function process(data) {
 
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
-    ctx.font = '20px Arial';
+    ctx.font = '12px Arial';
     ctx.lineWidth = 2;
 
     if (result.geo !== undefined) {
@@ -100,7 +104,7 @@ function process(data) {
         if (result.players != "") { 
             players = result.players.split(',');
         }
-        
+
         var info = [];
 
         for (var i=0; i<players.length; ++i) {
