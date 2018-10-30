@@ -8,6 +8,15 @@ import java.util.Random;
 // To access data classes.
 import railway.sim.utils.*;
 
+
+class LinkInfo {
+    public int town1;
+    public int town2;
+
+    public double distance;
+}
+
+
 public class Player implements railway.sim.Player {
 
     boolean toPrint = true;
@@ -17,6 +26,8 @@ public class Player implements railway.sim.Player {
             System.out.println(s);
         }
     }
+
+    private static List<LinkInfo> links = new ArrayList<>();
 
     // Random seed of 42.
     private int seed = 42;
@@ -49,19 +60,34 @@ public class Player implements railway.sim.Player {
 
         //println("HELLOOOO\n\n\n");
 
+        // only bids one round for now
         if (availableBids.size() != 0) {
             return null;
         }
 
-        for (BidInfo bi : allBids) {
-            if (bi.owner == null) {
-                availableBids.add(bi);
+
+        if (availableBids.size() == 0) {
+        // updates available bids
+            for (BidInfo bi : allBids) {
+                if (bi.owner == null) {
+                    availableBids.add(bi);
+                }
+            }
+
+            if (availableBids.size() == 0) {
+                return null;
             }
         }
 
-        if (availableBids.size() == 0) {
-            return null;
-        }
+        /* BidInfo contains minimum price
+        for (BidInfo x : availableBids) {
+            println(x.owner + x.amount);
+        }*/
+
+
+
+
+
 
         BidInfo randomBid = availableBids.get(rand.nextInt(availableBids.size()));
         double amount = randomBid.amount;
@@ -99,4 +125,6 @@ public class Player implements railway.sim.Player {
 
         availableBids = new ArrayList<>();
     }
+
+
 }
